@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr.oh! 금쪽상담</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .chat-container {
+            height: calc(100vh - 220px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            max-width: 70%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: flex-start;
+
+        }
+        .user-message {
+           
+            align-self: flex-end;
+            /*background-color: #7c3aed;*/
+            padding: 5px 10px;
+            border-radius: 15px 3px 13px 15px;
+            background: #DDD;
+            color:#333333;
+
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .bot-message {
+            align-self: flex-start;
+            display: inline-flex;
+            padding: 8.5px 10px;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+
+        }
+        .avatar-container {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+           
+            /* 아바타와 메시지 간의 간격 */
+        }
+
+        .dr-oh-wrapper {
+                display: flex;
+                flex-direction: column; /* 수직 정렬 */
+                align-items: flex-start; /* 왼쪽 맞춤 */
+                width: 100%; /* 전체 너비 사용 */
+            }
+
+        .dr-oh-text {
+            align-self: flex-start;
+            align-items: center;
+            font-weight: bold;
+            /*color: #ffcc00;     /* 글씨 색상 */
+            font-size: 13px; 
+        }
+
+        .message-content {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 3px 15px 15px 13px;
+            background-color: #014547;
+            color: white;
+            margin-top: 5px;
+           
+        }
+
+        .bot-message-content {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            padding: 8.5px 10px;
+            border-radius: 3px 15px 15px 13px;
+            background-color: #014547;
+            color: white;
+            margin-top: 5px;
+            font-size: 13px;
+           
+        }
+
+        .user-message-content {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 3px;
+         
+            background-color: #DDD;
+            color: #333333;
+            margin-top: 5px;
+
+            font-size: 13px;
+        }   
+
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background-color: white;
+           
+        }
+        .video-recommendations {
+            padding: 10px;
+            background-color: #f3f4f6;
+            border-radius: 10px;
+            font-size: 0.9em;
+            padding-inline-end: 10px;
+           
+            overflow-y: auto;
+            /* width: 95vw;
+           /* max-height: 300px; */
+           display: block;
+           width: 100%;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .message-content {
+            flex: 1;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+        .new-chat-btn {
+            background-color: #5BA682;
+            color: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .textfield { 
+            display: flex; width: 90%; 
+            margin-right: 9px;
+            align-items: center; gap: 7px; padding: 8px 12px; position: relative; border-radius: 6px; border: 1px solid; border-color: #0000001a; 
+        }
+
+        .upperLogo{
+            width: 100%; /* 너비를 50%로 설정 */
+            max-width: 100px;
+            height: auto; /* 비율을 유지하면서 높이 자동 조절 */
+        }
+
+        .logo-container {
+            display: flex; /* Flexbox 사용 */
+             /*justify-content: center; 가로 방향 중앙 정렬 */
+            justify-content: flex-end; /* 왼쪽 정렬 */
+        }
+
+        /* 아코디언 코드 */
+        .accordion-header {
+            cursor: pointer;
+            padding: 8.5px;
+            background-color: #5BA682;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion-header:hover {
+            background-color: #5BA682;
+        }
+        .accordion-content {
+            padding: 10px;
+            /*display: none;  기본적으로 감춤 */
+        }
+
+
+    </style>
+</head>
+<body style="background-color: #ffffff;">
+    <div class="container mx-auto p-4 h-full flex flex-col">
+        <!-- <h1 class="text-2xl font-bold mb-4 text-center text-purple-600">오은영 박사 AI 상담소</h1>-->
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}">
+        <img class="upperLogo" src="{{ url_for('static', filename='images/logo.PNG') }}"/> 
+        </a>
+        </div>
+
+        <div class="flex-grow overflow-hidden">
+            <div id="chat-container" class="chat-container "></div>
+            
+        </div>
+        
+        
+         <!-- 아코디언 시작 
+           
+
+            <div class="input-area">
+                <div class="input-area mt-2"> 
+
+        <div id="video-recommendations" class="video-recommendations bg-white rounded-lg shadow-md mb-4 hidden">
+                <div class="accordion-header" id="accordion-toggle">
+                    <span>관련 영상 추천</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content" id="accordion-content"></div>
+            </div>-->
+
+
+
+                <div class="input-group">
+                    <button id="new-chat" class="new-chat-btn mr-2" title="새 대화 시작">+</button>
+                    <form id="chat-form" class="flex flex-grow">
+                        <!-- <input type="text" id="user-input" class="flex-grow border rounded-l-full p-2" placeholder="메시지를 입력하세요."> -->
+                        <input type="text" id="user-input" class="textfield" placeholder="메시지를 입력하세요.">
+                        <!--<button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded-r-full">전송</button>-->
+                        <!--<button type="submit" class="new-chat-btn mr-2" title="새 submit">^</button>-->
+                        <button type="submit" title="새 전송"  class="responsive-image">
+                            <img src="{{ url_for('static', filename='images/send_36.png') }}"/>
+                        </button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        
+    </div>
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        // 이전 추천영상 
+        //const videoRecommendationsContainer = document.getElementById('video-recommendations');
+        let isCounseling = true; // 항상 상담 모드로 설정
+
+
+        // 새 추천영상 
+        //const videoRecommendationsContainer = document.getElementById('accordion-content');
+        //const accordionToggle = document.getElementById('accordion-toggle');
+
+         // 아코디언 기능 구현
+        // accordionToggle.addEventListener('click', () => {
+        //    const content = document.getElementById('accordion-content');
+        //    const icon = accordionToggle.querySelector('i');
+       //     content.style.display = content.style.display === 'none' || content.style.display === '' ? 'block' : 'none';
+        //    icon.classList.toggle('fa-chevron-down');
+        //   icon.classList.toggle('fa-chevron-up');
+       // });
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage('user', message);
+            userInput.value = '';
+
+            // 1025
+            //const response = await fetch('/chat', {
+            //    method: 'POST',
+            //    headers: {
+            //        'Content-Type': 'application/json',
+            //    },
+            //    body: JSON.stringify({ message, isCounseling }),
+            //});
+
+            const response = await fetch('http://aicarechat.life:30002/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message, isCounseling }),
+            });
+
+
+            const data = await response.json();
+            //addMessage('bot', data.response);
+            addMessage('bot', data.response, data.videos); // 추천 영상 함께 전달
+            
+            if (data.videos && data.videos.length > 0) {
+                showVideoRecommendations(data.videos);
+            } else {
+                hideVideoRecommendations();
+            }
+        });
+
+        const newChatButton = document.getElementById('new-chat');
+
+        newChatButton.addEventListener('click', () => {
+            chatContainer.innerHTML = '';
+            //hideVideoRecommendations();
+            addMessage('bot', '안녕하세요. 새로운 상담을 시작하겠습니다. 어떤 고민이 있으신가요?');
+        });
+
+        // 이전 코드  -------------------------------------------------------------
+        // function addMessage(sender, message) {
+        //     const messageElement = document.createElement('div');
+        //     messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+
+        //     const botAvatarUrl = "{{ url_for('static', filename='images/Group 1171275473.png') }}"; // Flask에서 URL 생성
+
+        //     let avatarHTML = '';
+        //     if (sender === 'bot') {
+        //        avatarHTML = `<img src="${botAvatarUrl}" alt="drLogo" class="avatar">`;
+        //     }
+            
+        //     messageElement.innerHTML = `
+        //         ${avatarHTML}
+        //         <div class="message-content">${message}</div>
+        //     `;
+            
+        //     chatContainer.appendChild(messageElement);
+        //     chatContainer.scrollTop = chatContainer.scrollHeight;
+        // }
+        // 이전 코드  -------------------------------------------------------------
+
+        // 새 코드  -------------------------------------------------------------
+        function addMessage(sender, message,videos = null) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+
+                const botAvatarUrl = "{{ url_for('static', filename='images/Group 1171275473.png') }}"; // Flask에서 URL 생성
+
+                let avatarHTML = '';
+                if (sender === 'bot') {
+
+                    
+                    avatarHTML = `<div class="avatar-container"><img src="${botAvatarUrl}" alt="drLogo" class="avatar"></div>`;
+                    
+                    messageElement.innerHTML = `
+                    ${avatarHTML}
+                    
+                    <div class="dr-oh-wrapper" id="drOhWrap"  name="drOhWrap" > 
+                      <div class="dr-oh-text">Dr.oh</div>
+
+                        <div class="bot-message-content">
+                            ${message}
+                        </div>
+
+                       
+
+                         </div>
+                      `;
+
+
+                     
+                
+                } else{
+                     messageElement.innerHTML = `
+                        ${avatarHTML}
+                        <div class="user-message-content">${message}</div>
+                     `;
+                }
+    
+                
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;      
+                addVideo(videos);
+                
+            }
+            
+            // 비디오 1 ----------
+            function addVideo(videos){
+                        // 관련 영상 추가 ------------------
+                        if (videos && videos.length > 0) {
+                            //const drOhWrap = document.getElementsByName('drOhWrap');
+                            const lastMessageElement = chatContainer.lastElementChild; // 마지막 메시지 요소 선택
+                    const drOhWrap = lastMessageElement.querySelector('.dr-oh-wrapper'); // 마지막 메시지 요소 내의 dr-oh-wrapper 선택
+                            const recommendationsElement = document.createElement('div');
+                            //recommendationsElement.classList.add('dr-oh-wrapper');
+                            recommendationsElement.classList.add('video-recommendations');
+                            videos.forEach(video => {
+                                const videoLink = document.createElement('a');
+                                videoLink.href = `https://www.youtube.com/watch?v=${video.video_id}`;
+                                videoLink.target = '_blank';
+                                videoLink.textContent = video.title;
+                                videoLink.classList.add('block', 'mb-1', 'text-blue-600', 'hover:underline');
+                                recommendationsElement.appendChild(videoLink);
+                            });
+                            drOhWrap.appendChild(recommendationsElement);
+                        }  
+                        // 관련 영상 추가 ------------------ 
+
+            }
+            // 비디오 1 ----------
+
+            // 비디오 2 ----------
+            function addVideo2(videos){
+                       // 관련 영상 추가 ------------------
+    if (videos && videos.length > 0) {
+        const lastMessageElement = chatContainer.lastElementChild; // 마지막 메시지 요소 선택
+        const drOhWrap = lastMessageElement.querySelector('.dr-oh-wrapper'); // 마지막 메시지 요소 내의 dr-oh-wrapper 선택
+        
+        // 비디오 추천 영역 생성
+        const recommendationsContainer = document.createElement('div');
+        recommendationsContainer.id = 'video-recommendations';
+        recommendationsContainer.className = 'video-recommendations bg-white rounded-lg shadow-md mb-4 hidden';
+        
+        // 아코디언 헤더 생성
+        const accordionHeader = document.createElement('div');
+        accordionHeader.className = 'accordion-header';
+        accordionHeader.id = 'accordion-toggle';
+        accordionHeader.innerHTML = `<span>관련 영상 추천</span> <i class="fas fa-chevron-down"></i>`;
+        
+        // 아코디언 내용 영역 생성
+        const accordionContent = document.createElement('div');
+        accordionContent.className = 'accordion-content';
+        accordionContent.id = 'accordion-content';
+
+        // 비디오 링크 추가
+        videos.forEach(video => {
+            const videoLink = document.createElement('a');
+            videoLink.href = `https://www.youtube.com/watch?v=${video.video_id}`;
+            videoLink.target = '_blank';
+            videoLink.textContent = video.title;
+            videoLink.classList.add('block', 'mb-1', 'text-blue-600', 'hover:underline');
+            accordionContent.appendChild(videoLink);
+        });
+
+        // 구조를 완성
+        recommendationsContainer.appendChild(accordionHeader);
+        recommendationsContainer.appendChild(accordionContent);
+        drOhWrap.appendChild(recommendationsContainer); // 마지막 메시지 요소의 dr-oh-wrapper에 추가
+    }
+    // 관련 영상 추가 ------------------
+            }
+
+             // 비디오 2 ----------
+
+
+         // 새 코드  -------------------------------------------------------------
+
+        // 이전 함수 -------------------------------------------------------------
+        //function showVideoRecommendations(videos) {
+        //    videoRecommendationsContainer.innerHTML = '<h3 class="font-bold mb-2">관련 영상 추천:</h3>';
+        //    videos.forEach(video => {
+        //       const videoLink = document.createElement('a');
+        //        videoLink.href = `https://www.youtube.com/watch?v=${video.video_id}`;
+        //        videoLink.target = '_blank';
+        //        videoLink.textContent = video.title;
+        //        videoLink.classList.add('block', 'mb-1', 'text-blue-600', 'hover:underline');
+        //        videoRecommendationsContainer.appendChild(videoLink);
+        //    });
+        //    videoRecommendationsContainer.classList.remove('hidden');
+        //}function hideVideoRecommendations() {
+        //    videoRecommendationsContainer.classList.add('hidden');
+        //    videoRecommendationsContainer.innerHTML = '';
+        //}
+         // 이전 함수 -------------------------------------------------------------
+
+          // 새 함수 -------------------------------------------------------------
+          function showVideoRecommendations(videos) {
+            videoRecommendationsContainer.innerHTML = ''; // 내용 초기화
+            videos.forEach(video => {
+                const videoLink = document.createElement('a');
+                videoLink.href = `https://www.youtube.com/watch?v=${video.video_id}`;
+                videoLink.target = '_blank';
+                videoLink.textContent = video.title;
+                videoLink.classList.add('block', 'mb-1', 'text-blue-600', 'hover:underline');
+                videoRecommendationsContainer.appendChild(videoLink);
+                });
+
+                //video-recommendations control
+                const AllvideoRecommendationsContainer = document.getElementById('video-recommendations');
+                AllvideoRecommendationsContainer.classList.remove('hidden');
+
+                
+            }
+
+            function hideVideoRecommendations() {
+                AllvideoRecommendationsContainer.classList.add('hidden');
+                videoRecommendationsContainer.innerHTML = '';
+            }
+           // 새 함수 -------------------------------------------------------------
+
+        
+
+        // 초기 메시지 추가
+        addMessage('bot', '안녕하세요. 어떤 고민이 있으신가요?');
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr.oh! 금쪽상담</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-family: 'Noto Sans KR', sans-serif;
+            align-items: flex-end;
+            display: flex;
+            justify-content: center;
+        }
+       
+
+        .upperLogo{
+            width: 15%; /* 너비를 50%로 설정 */
+            max-width: 100px;
+            height: auto; /* 비율을 유지하면서 높이 자동 조절 */
+        }
+
+        .logo-container {
+            display: flex; /* Flexbox 사용 */
+             /*justify-content: center; 가로 방향 중앙 정렬 */
+            justify-content: flex-end; /* 왼쪽 정렬 */
+        }
+
+        .container {
+    text-align: center;
+    color: white;
+}
+
+.content {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    margin-top: 130px;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    
+}
+
+.logo-text {
+    display: inline-block; /* 로고와 텍스트를 인라인 블록으로 처리 */
+    vertical-align: middle; /* 이미지와 텍스트 높이 맞추기 */
+ 
+}
+
+
+.logo-text-big {
+    width: 130%; /* 로고 이미지의 너비 */
+    height: auto; /* 이미지 비율을 유지하며 높이 자동 조정 */
+    padding: 0 3px; 
+}
+
+.logo {
+    width: 80px; /* 로고 이미지 크기 조정 */
+    vertical-align: middle;
+}
+
+.logo-inline {
+    width: 60px; /* 설명문 내 로고 이미지 크기 조정 */
+    vertical-align: middle;
+}
+
+.character {
+    width: 150px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.description {
+    margin: 0 auto; /* 요소 자체를 가운데 정렬 */
+    width: 70%;
+    font-size: 12px;
+    line-height: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: left; 
+    color: #E0F2F1;
+}
+
+.start-btn {
+    width: 90%;
+    background-color: #5BA682;;
+    color: #ffffff;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.9em;
+    cursor: pointer;
+    position: fixed;  /* Use fixed positioning */
+    bottom: 20px;     /* Distance from the bottom */
+    left: 50%;        /* Center it horizontally */
+    transform: translateX(-50%); /* Adjust position to center */
+}
+
+.start-btn:hover {
+    background-color: #75c1a5;
+}
+    </style>
+</head>
+<body style="background-color: #014547;">
+    <div class="container mx-auto p-4 h-full flex flex-col">
+        <!-- <h1 class="text-2xl font-bold mb-4 text-center text-purple-600">오은영 박사 AI 상담소</h1>-->
+        <!--<div class="logo-container">
+        <img class="upperLogo" src="{{ url_for('static', filename='images/logo2.PNG') }}"/> 
+        </div>-->
+        
+        <div class="home">
+            <div class="container">
+                <div class="content">
+                    <h1>
+                        안녕하세요, 
+                        <span class="logo-text">
+                            <img class="logo-text-big" src="{{ url_for('static', filename='images/logo2.PNG') }}" alt="DR oh 로고" class="logo">
+                        </span>입니다.<br>만나서 정말 반가워요!
+                    </h1>
+                    <img src="{{ url_for('static', filename='images/ai-Photoroom.png') }}" alt="DR oh 캐릭터" class="character">
+                    <p class="description">
+                       <!-- <span class="logo-text">
+                            <img class="logo-text-big" src="{{ url_for('static', filename='images/logo2.PNG') }}" alt="DR oh 로고" class="logo-inline">                          
+                        </span> -->
+                        Dr.oh! 금쪽상담은 오박사님의 따뜻한 조언을 기반으로 만들어진
+                        부모님들과 함께하는<br> 육아 상담 챗봇이에요.<br>
+                        아이 키우며 마주하는 고민들에 대해 실시간으로 유용한 정보를 드리고,
+                        부모님 곁에서 언제나 함께 해결책을 찾아드릴게요.
+                    </p>
+                   
+                </div>
+                <a href="{{ url_for('gochat') }}">
+              <button class="start-btn">바로 시작하기</button>   
+                </a> 
+            </div>
+      
+    <script>
+       
+    </script>
+</body>
+</html>

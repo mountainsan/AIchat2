@@ -1,0 +1,28 @@
+# Python 관련
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Conda 및 가상 환경
+venv/
+.env/
+conda-recipe/
+
+# Flask 관련
+instance/
+*.log
+
+# IDE 설정
+.vscode/
+.idea/
+
+# Node.js UI 관련
+node_modules/
+dist/
+build/
+
+# Docker 관련
+*.dockerfile
+docker-compose.override.yml
+
+.env

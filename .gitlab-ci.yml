@@ -1,0 +1,42 @@
+image: docker:latest  # Docker 이미지를 사용
+
+services:
+  - docker:dind  # Docker-in-Docker 서비스 활성화
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:latest  # Registry 이미지 경로
+  KUBECONFIG: "$CI_PROJECT_DIR/.kube/config"  # kubeconfig 경로 지정
+  DEPLOYMENT_NAME: kict_aichatbot_frontend # k8s에서 사용할 이름
+
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - echo "$API_KEY" > $CI_PROJECT_DIR/.env  # 파이프라인에서 .env 생성
+    - ls -al $CI_PROJECT_DIR  # .env 파일이 생성되었는지 확인
+  script:
+    - docker buildx create --use
+    - docker buildx build --platform linux/arm/v7,linux/arm64,linux/amd64 -t "$CI_REGISTRY_IMAGE:latest" --push .
+  only:
+    - main  # main 브랜치에 푸시할 때만 실행
+
+deploy:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:1.14
+    entrypoint: [""]
+  before_script:
+    - mkdir -p $(dirname $KUBECONFIG)
+    - echo "$KUBE_CONFIG_DATA" | base64 -d > $KUBECONFIG
+    - sed -i 's/127.0.0.1/aicarechat.life/g' $KUBECONFIG
+  script:
+    - kubectl --kubeconfig=$KUBECONFIG replace --force -f deployment.yaml -n aicarechat
+    - kubectl --kubeconfig=$KUBECONFIG replace --force -f service.yaml -n aicarechat
+  only:
+    - main
